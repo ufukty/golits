@@ -13,8 +13,8 @@ go install github.com/ufukty/golits
 ## Usage
 
 ```sh
-$ golits errors.go
-# "generic" (internal/mistakes/mistakes.go:15:27, internal/mistakes/mistakes.go:16:27, internal/mistakes/mistakes.go:17:27)
+$ golits mistakes.go
+# "generic" (mistakes.go:15:27, mistakes.go:16:27, mistakes.go:17:27)
 ```
 
 ## Contribution
