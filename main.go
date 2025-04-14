@@ -31,6 +31,7 @@ func Main() error {
 	if err != nil {
 		return fmt.Errorf("opening %q: %w", filename, err)
 	}
+	defer fh.Close()
 
 	fs := token.NewFileSet()
 	f, err := parser.ParseFile(fs, filename, fh, parser.ParseComments|parser.AllErrors)
