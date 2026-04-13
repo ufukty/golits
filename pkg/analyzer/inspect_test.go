@@ -1,18 +1,8 @@
 package inspect
 
 import (
-	"fmt"
 	"os"
 )
-
-func basicPrinter(duplicates []Entry) {
-	for _, entry := range duplicates {
-		fmt.Println(entry.LiteralValue)
-		for _, occ := range entry.Occurrences {
-			fmt.Println(" ", occ.String())
-		}
-	}
-}
 
 func ExampleFile_positive() {
 	fh, _ := os.Open("testdata/positive.go")
