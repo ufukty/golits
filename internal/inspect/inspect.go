@@ -33,10 +33,10 @@ func occurrences(f *ast.File) map[string][]analysis.Range {
 
 // existence of duplicate entries is not counted as error
 func file(pass *analysis.Pass, f *ast.File) {
-	for _, occs := range occurrences(f) {
+	for lit, occs := range occurrences(f) {
 		if len(occs) > 1 {
 			for _, occ := range occs {
-				pass.ReportRangef(occ, "duplicated string literal")
+				pass.ReportRangef(occ, "duplicated string literal %s", lit)
 			}
 		}
 	}
