@@ -11,7 +11,7 @@ Golits is designed to catch multiple uses of same string literals for declaring 
 ## Install
 
 ```sh
-go install github.com/ufukty/golits@latest
+go install go.ufukty.com/golits@latest
 ```
 
 ## Usage

@@ -1,7 +1,7 @@
 package analyzer
 
 import (
-	"github.com/ufukty/golits/internal/inspect"
+	"go.ufukty.com/golits/internal/inspect"
 	"golang.org/x/tools/go/analysis"
 )
 

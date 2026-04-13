@@ -1,4 +1,4 @@
-module github.com/ufukty/golits
+module go.ufukty.com/golits
 
 go 1.26
 
