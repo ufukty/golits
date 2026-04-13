@@ -1,10 +1,10 @@
-# golits (go literals)
+# Golits
 
-<img src="assets/Logo@1x.png" srcset="assets/Logo@2x.png 2x, assets/Logo@3x.png 3x" width="128px">
+<img src="assets/Logo@1x.png" srcset="assets/Logo@2x.png 2x, assets/Logo@3x.png 3x" width="256px">
 
-golits is a CLI utility that lists all duplicate string literals found in a Go file. It is designed to catch multiple uses of same string literals for declaring different error types. Which confuse clients.
+Golits is a go-vet style analyzer. Golits lists all the string literals that is mentioned more than once in a file.
 
-golits expects the first and only argument to be the filename. It exits with non-0 status code for IO and parsing errors and if there are multiple use of same string literal.
+Golits is designed to catch multiple uses of same string literals for declaring different error types. Which confuse clients.
 
 ## Install
 
@@ -14,14 +14,49 @@ go install github.com/ufukty/golits@latest
 
 ## Usage
 
+Direct use:
+
 ```sh
-$ golits errors.go
-# "invalid-value" (errors.go:15:27, errors.go:16:27, errors.go:17:27)
+$ golits ./...
 ```
 
-## Contribution
+Via Go Vet tool:
 
-Issues, PRs and discussions are welcome.
+```sh
+go vet --vettool="$(which golits)" ./...
+```
+
+## Example
+
+```go
+// file.go
+package testdata
+
+import "fmt"
+
+var (
+  ErrA = fmt.Errorf("a")
+  ErrB = fmt.Errorf("a")
+  ErrC = fmt.Errorf("c")
+  ErrD = fmt.Errorf("d")
+)
+
+var (
+  ErrE = fmt.Errorf("e")
+  ErrF = fmt.Errorf("a")
+  ErrG = fmt.Errorf("g")
+  ErrH = fmt.Errorf("d")
+)
+```
+
+```sh
+$ golits .
+file.go:6:20: duplicated string literal "a"
+file.go:7:20: duplicated string literal "a"
+file.go:14:20: duplicated string literal "a"
+file.go:9:20: duplicated string literal "d"
+file.go:16:20: duplicated string literal "d"
+```
 
 ## License
 
