@@ -2,7 +2,9 @@
 
 <img src="assets/Logo@1x.png" srcset="assets/Logo@2x.png 2x, assets/Logo@3x.png 3x" width="256px">
 
-Golits is a go-vet style analyzer. Golits lists all the string literals that is mentioned more than once in a file.
+Golits is a go-vet style analyzer. 
+
+Golits lists all the string literals that is mentioned more than once in a file.
 
 Golits is designed to catch multiple uses of same string literals for declaring different error types. Which confuse clients.
 
