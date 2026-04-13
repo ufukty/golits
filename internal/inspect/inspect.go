@@ -1,11 +1,10 @@
 package inspect
 
 import (
-	"fmt"
 	"go/ast"
-	"go/parser"
 	"go/token"
-	"io"
+
+	"golang.org/x/tools/go/analysis"
 )
 
 func has[K comparable, V any](m map[K]V, k K) bool {
@@ -13,45 +12,39 @@ func has[K comparable, V any](m map[K]V, k K) bool {
 	return ok
 }
 
-type Entry struct {
-	LiteralValue string
-	Occurrences  []token.Position
-}
-
-// existence of duplicate entries is not counted as error
-func File(fh io.Reader, filename string) ([]Entry, error) {
-	fs := token.NewFileSet()
-	f, err := parser.ParseFile(fs, filename, fh, parser.ParseComments|parser.AllErrors)
-	if err != nil {
-		return nil, fmt.Errorf("parsing: %w", err)
-	}
-
-	order := []string{}
-	occurrences := map[string][]token.Position{}
+// returns a map of literals and list of their occurrences
+func occurrences(f *ast.File) map[string][]analysis.Range {
+	occs := map[string][]analysis.Range{}
 	ast.Inspect(f, func(n ast.Node) bool {
 		if n == nil {
 			return true
 		}
 		if bl, ok := n.(*ast.BasicLit); ok && bl.Kind == token.STRING {
-			if !has(occurrences, bl.Value) {
-				occurrences[bl.Value] = []token.Position{}
-				order = append(order, bl.Value)
+			if !has(occs, bl.Value) {
+				occs[bl.Value] = []analysis.Range{}
 			}
-			occurrences[bl.Value] = append(occurrences[bl.Value], fs.Position(bl.Pos()))
+			occs[bl.Value] = append(occs[bl.Value], bl)
 			return false
 		}
 		return true
 	})
+	return occs
+}
 
-	duplicates := []Entry{}
-	for _, lit := range order {
-		if len(occurrences[lit]) > 1 {
-			duplicates = append(duplicates, Entry{
-				LiteralValue: lit,
-				Occurrences:  occurrences[lit],
-			})
+// existence of duplicate entries is not counted as error
+func file(pass *analysis.Pass, f *ast.File) {
+	for lit, occs := range occurrences(f) {
+		if len(occs) > 1 {
+			for _, occ := range occs {
+				pass.ReportRangef(occ, "duplicated string literal %s", lit)
+			}
 		}
 	}
+}
 
-	return duplicates, nil
+func Files(pass *analysis.Pass) (any, error) {
+	for _, f := range pass.Files {
+		file(pass, f)
+	}
+	return nil, nil
 }
