@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/ufukty/golits/pkg/analyzer"
+	"go.ufukty.com/golits/pkg/analyzer"
 	"golang.org/x/tools/go/analysis/singlechecker"
 )
 
